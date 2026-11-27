@@ -33,8 +33,8 @@ export function viewOverview(store) {
   const topCats = CATEGORIES.filter((c) => c.id !== 'income' && (byCat[c.id] || 0) > 0)
     .map((c) => ({ label: c.name, value: byCat[c.id], color: c.color }))
     .sort((a, b) => b.value - a.value);
-  const recent = [...store.transactions]
-    .filter((t) => t.date.startsWith(MONTH))
+  const monthTx = store.transactions.filter((t) => t.date.startsWith(MONTH));
+  const recent = [...monthTx]
     .sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id))
     .slice(0, 8);
   const budgetRows = CATEGORIES.filter((c) => c.id !== 'income' && store.budgets[c.id])
@@ -50,7 +50,7 @@ export function viewOverview(store) {
   <p class="lede">Maya, Jon &amp; Leo — one household, one pot. Spending is running close to plan, and the family has kept ${money0(left)} of its income so far this month.</p>
   <div class="cards">
     <div class="stat"><div class="label">Money in</div><div class="big pos money">${money(income)}</div><div class="sub">Salaries + freelance</div></div>
-    <div class="stat"><div class="label">Money out</div><div class="big neg money">${money(spent)}</div><div class="sub">25 entries so far</div></div>
+    <div class="stat"><div class="label">Money out</div><div class="big neg money">${money(spent)}</div><div class="sub">${monthTx.length} entries so far</div></div>
     <div class="stat highlight"><div class="label">Left to save</div><div class="big money">${money(left)}</div><div class="sub">${savingsRate}% of income saved</div></div>
     <div class="stat"><div class="label">Next bill</div><div class="big" style="font-size:22px">${nextBill ? esc(nextBill.name.split(' — ')[0]) : 'All paid'}</div><div class="sub">${nextBill ? money(nextBill.amount) + ' due ' + niceDate(nextBill.due) : 'Nothing due in December'}</div></div>
   </div>
